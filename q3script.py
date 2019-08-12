@@ -5,21 +5,30 @@ from matplotlib import pyplot as plt
 
 data=pandas.read_csv("E:/data/taxitrip_2016/CY 2016/Apr 2016 Trips.rpt",delimiter="|")
 
+print("loaded")
+
 data["StartBlock"]=data["StartDateTime"].str.slice(0,15)
 data["StartBlockTime"]=data["StartDateTime"].str.slice(11,15)
 
 skdata=data[(data["OriginLatitude"]>35)&(data["OriginLatitude"]<45)&(data["OriginLongitude"]>-80)&(data["DestinationLongitude"]<-70)&(data["DestinationLatitude"]>35)&(data["DestinationLatitude"]<45)&(data["DestinationLongitude"]>-80)&(data["OriginLongitude"]<-70)][["OriginLatitude","OriginLongitude","DestinationLatitude","DestinationLongitude"]].dropna().values
 
+print("cleaned")
+"""
 kmeans=KMeans(n_clusters=16).fit(skdata)
 print(kmeans.cluster_centers_)
 
 clusters=[x for sublist in zip(kmeans.cluster_centers_[:,0:4:2],kmeans.cluster_centers_[:,1:4:2]) for x in sublist]
+
+print("clustered")
 
 plt.plot(*clusters)
 plt.xlim(38,42)
 plt.ylim(-74,-78)
 plt.title("Taxicab trip clusters")
 plt.savefig("routes.png")
+
+print("plotted")
+"""
 
 def counttrips(index,threshold=.001): # Default threshold is approx 100 meters
     sblock=data.iloc[index]["StartBlock"]
@@ -53,8 +62,13 @@ for i in range(10000):
     except (ValueError,TypeError,KeyError):
         pass
 
+print("calculated")
+print(sum(results))
+
 plt.figure()
 plt.plot([x/6.0 for x in range(144)],results)
 plt.xlabel("Time")
 plt.ylabel("Number of Compatible Trips")
 plt.savefig("CompatibleTrips.png")
+
+print "Done"
